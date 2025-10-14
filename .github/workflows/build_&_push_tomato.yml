@@ -50,7 +50,7 @@ jobs:
           tenant-id: ${{ secrets.ARM_TENANT_ID }}
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           client-secret: ${{ secrets.ARM_CLIENT_SECRET }}
-          auth-type: oidc
+          auth-type: SERVICE_PRINCIPAL
 
       - name: Log in to Azure Container Registry
         run: |
