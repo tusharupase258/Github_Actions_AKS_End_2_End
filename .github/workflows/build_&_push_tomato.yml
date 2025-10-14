@@ -58,7 +58,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t $IMAGE_NAME:$IMAGE_TAG .
+          docker build -t $IMAGE_NAME:$IMAGE_TAG -f Tushar-s-Tomato/dockerfile Tushar-s-Tomato
 
       - name: Tag Docker Image for ACR
         run: |
