@@ -1,47 +1,67 @@
-name: build_&_push_tomato
-on: 
-   workflow_dispatch: 
-   push:
+name: Build & Push Tomato
+
+on:
+  push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      image_name:
+        description: "Enter Docker Image Name"
+        required: true
+        default: "tomato-ui"
+      image_tag:
+        description: "Enter Image Tag"
+        required: true
+        default: "latest"
+
 permissions:
-  id-token: write
   contents: read
-  
+
 jobs:
- build-and-push:
-  runs-on: ubuntu-latest
+  build-and-push:
+    runs-on: ubuntu-latest
 
-  env:
-    ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-    ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-    ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-    ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-    ACR_NAME: ${{ secrets.ARM_NAME }}
-    ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
-    
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    - name: Azure Login
-      uses: Azure/login@v2.3.0
-      with:
-         client-id: ff27bcf6-f60c-4a57-8b01-8eee5de2a9cd
-         tenant-id: 0f7010fd-209e-4344-8457-043ffb37143b
-         subscription-id: 1075ec7a-b17a-4f37-bf3f-9d68c4506dc1
-         
-    - name: Log in to ACR
-      run: |
-        az acr login --name $ACR_NAME
-        
-    - name: Build Docker Image
-      run: |
-        docker build -t $IMAGE_NAME:$IMAGE_TAG .
-        
-    - name: Tag Docker Image for ACR
-      run: |
-        docker tag $IMAGE_NAME:$IMAGE_TAG $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ACR_NAME: ${{ secrets.ACR_NAME }}
+      ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
 
-    - name: Push Docker Image to ACR
-      run: |
-         docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Image Name & Tag
+        run: |
+          IMAGE_NAME=${{ github.event.inputs.image_name || 'tomato-ui' }}
+          IMAGE_TAG=${{ github.event.inputs.image_tag || 'latest' }}
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "Building Docker image: $IMAGE_NAME:$IMAGE_TAG"
+
+      - name: Azure Login (Service Principal)
+        uses: Azure/login@v2.3.0
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.ARM_CLIENT_SECRET }}
+
+      - name: Log in to Azure Container Registry
+        run: |
+          az acr login --name $ACR_NAME
+
+      - name: Build Docker Image
+        run: |
+          docker build -t $IMAGE_NAME:$IMAGE_TAG .
+
+      - name: Tag Docker Image for ACR
+        run: |
+          docker tag $IMAGE_NAME:$IMAGE_TAG $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG
+
+      - name: Push Docker Image to ACR
+        run: |
+          docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG
