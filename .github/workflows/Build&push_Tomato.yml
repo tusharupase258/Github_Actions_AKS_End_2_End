@@ -1,4 +1,4 @@
-name: Docker Build & Push Infra-Style
+name: Docker Build & Push 
 
 on:
   push:
