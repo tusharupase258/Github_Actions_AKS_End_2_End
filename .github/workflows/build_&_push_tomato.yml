@@ -1,0 +1,41 @@
+name: build_&_push_tomato
+on: 
+   workflow_dispatch: 
+   push:
+    branches:
+      - main
+permissions:
+  id-token: write
+  contents: read
+  
+jobs:
+ build-and-push:
+  runs-on: ubuntu-latest
+
+  env:
+    ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+    ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+    ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+    ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+    ACR_NAME: ${{ secrets.ARM_NAME }}
+    ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
+    
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Log in to ACR
+      run: |
+        az acr login --name $ACR_NAME
+        
+    - name: Build Docker Image
+      run: |
+        docker build -t $IMAGE_NAME:$IMAGE_TAG .
+        
+    - name: Tag Docker Image for ACR
+      run: |
+        docker tag $IMAGE_NAME:$IMAGE_TAG $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG
+
+    - name: Push Docker Image to ACR
+      run: |
+         docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG
