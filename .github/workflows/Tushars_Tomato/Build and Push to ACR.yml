@@ -1,45 +1,81 @@
-name: Build and Push to ACR
+name: Docker Build & Push Tomato
 
 on:
-  workflow_dispatch:  
+  push:
+    branches:
+      - dev
+      - preprod
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Select environment"
+        required: true
+        type: choice
+        options:
+          - dev
+          - preprod
+          - prod
+      image_name:
+        description: "Docker image name"
+        required: true
 
 permissions:
   id-token: write
   contents: read
-  
+
 jobs:
-  build-and-push:
+  docker-build-and-push:
+    name: Docker Build & Push
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_NAME: todo-ui
-      IMAGE_TAG: v2
-      ACR_NAME: acrdevtodoapp01
-      ACR_LOGIN_SERVER: acrdevtodoapp01.azurecr.io
+      BRANCH_NAME: ${{ github.ref_name }}
+      ENVIRONMENT: ${{ github.event.inputs.environment || (github.ref_name == 'main' && 'prod') || github.ref_name }}
+      IMAGE_NAME: ${{ github.event.inputs.image_name || github.repository#*/ }}
+      ACR_NAME: ${{ secrets.ACR_NAME }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      # 1️⃣ Checkout repo
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
+      # 2️⃣ Azure login (for ACR push)
       - name: Azure Login
         uses: Azure/login@v2.3.0
         with:
-          client-id: ff27bcf6-f60c-4a57-8b01-8eee5de2a9cd
-          tenant-id: 0f7010fd-209e-4344-8457-043ffb37143b
-          subscription-id: 1075ec7a-b17a-4f37-bf3f-9d68c4506dc1
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
-      - name: Log in to ACR
+      # 3️⃣ Set Docker tag dynamically (branch or environment)
+      - name: Set Docker Tag
         run: |
-          az acr login --name $ACR_NAME
+          if [ "${GITHUB_REF_NAME}" = "main" ]; then
+            IMAGE_TAG="prod-${GITHUB_SHA::8}"
+          else
+            IMAGE_TAG="${ENVIRONMENT}-${GITHUB_SHA::8}"
+          fi
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "ACR_LOGIN_SERVER=${ACR_NAME}.azurecr.io" >> $GITHUB_ENV
+          echo "Final image: $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG"
 
+      # 4️⃣ Log in to ACR
+      - name: Login to ACR
+        run: az acr login --name $ACR_NAME
+
+      # 5️⃣ Build Docker image
       - name: Build Docker Image
-        run: |
-          docker build -t $IMAGE_NAME:$IMAGE_TAG .
+        run: docker build -t $IMAGE_NAME:$IMAGE_TAG ./Tushar-s-Tomato
 
-      - name: Tag Docker Image for ACR
+      # 6️⃣ Tag Docker image for ACR
+      - name: Tag Docker Image
         run: |
           docker tag $IMAGE_NAME:$IMAGE_TAG $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG
+          docker tag $IMAGE_NAME:$IMAGE_TAG $ACR_LOGIN_SERVER/$IMAGE_NAME:latest
 
-      - name: Push Docker Image to ACR
+      # 7️⃣ Push Docker image
+      - name: Push Docker Image
         run: |
           docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG
+          docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:latest
