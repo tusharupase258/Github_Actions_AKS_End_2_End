@@ -6,9 +6,9 @@ metadata:
     app: tomato
   namespace: default
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginxkubect
   rules:
-  - host: tomato.devsecops.tushar
+  - host: tomato.devsecopstushar
     http:
       paths:
       - path: /
