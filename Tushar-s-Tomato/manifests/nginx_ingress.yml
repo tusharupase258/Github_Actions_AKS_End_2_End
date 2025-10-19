@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: tomato.devsecopstushar
+  - host: tomato.devsecopstushar.tech
     http:
       paths:
       - path: "/"
