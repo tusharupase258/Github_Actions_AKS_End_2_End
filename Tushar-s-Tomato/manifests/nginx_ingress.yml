@@ -8,12 +8,13 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    host: tomato.devsecops.tushar
-    http:
-      paths:
-        backend:
-          service:
-            name: tomato-clusterip-service
-            port: 80
-        path: "/"
-        pathType: Prefix
+   -  host: tomato.devsecops.tushar
+      http:
+        paths:
+          backend:
+            service:
+              name: tomato-clusterip-service
+              port:
+                number: 80
+          path: "/"
+          pathType: Prefix
