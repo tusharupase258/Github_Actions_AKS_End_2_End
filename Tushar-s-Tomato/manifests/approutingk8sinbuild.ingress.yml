@@ -6,7 +6,7 @@ metadata:
     app: tomato
   namespace: default
 spec:
-  ingressClassName: webapprouting.kubernetes.azure.com
+  ingressClassName: approuting-ingress
   rules:
   - host: tomato.devsecopstushar.tech
     http:
