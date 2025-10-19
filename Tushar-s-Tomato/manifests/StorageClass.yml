@@ -1,0 +1,14 @@
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: tomatostorageclass1old
+#   namespace: default
+#   labels:
+#     app: tomato
+# provisioner: kubernetes.io/azure-disk
+# parameters:
+#   storageaccounttype: Standard_LRS
+#   kind: Managed
+#   reclaimPolicy: Retain
+
+  #old & stateful

@@ -1,0 +1,33 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: tomatodeployment
+#   labels:
+#     app: tomato
+#   namespace: default
+# spec:
+#   replicas: 3
+#   selector:
+#     matchLabels:
+#       app: tomato
+#   strategy:
+#     type: Recreate
+#   template:
+#     metadata:
+#       labels:
+#         app: tomato
+#       name: tomato_pod
+#       namespace: default
+#     spec:
+#       containers:
+#       - image: tusharacr.azurecr.io/tomato-ui:latest
+#         name: tomatoc
+#         ports:
+#         - containerPort: 80
+#         resources:
+#           requests:
+#            cpu: 100m
+#            memory: 20Mi
+#           limits:
+#             cpu: 1
+#             memory: 200Mi
