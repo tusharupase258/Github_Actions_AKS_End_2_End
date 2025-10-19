@@ -8,13 +8,13 @@ metadata:
 spec:
   ingressClassName: webapprouting.kubernetes.azure.com
   rules:
-  - host: tomato.devsecopstushar.tech
-    http:
-      paths:
-      - path: "/"
-        pathType: Prefix
-        backend:
-          service:
-            name: tomato-clusterip-service
-            port:
-              number: 80
+   - host: tomato.devsecopstushar.tech
+     http:
+        paths:
+        - path: "/"
+          pathType: Prefix
+          backend:
+            service:
+              name: tomato-clusterip-service
+              port:
+                number: 80
