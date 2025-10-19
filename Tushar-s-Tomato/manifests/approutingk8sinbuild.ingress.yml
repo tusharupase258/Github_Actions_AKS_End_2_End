@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: webapprouting.kubernetes.azure.com
   rules:
-   - host: tomato.devsecopstushar.tech
+   - host: tomato1.devsecopstushar.tech
      http:
         paths:
         - path: "/"
