@@ -1,10 +1,19 @@
-# apiVersion: networking.k8s.io/v1
-# kind: Ingress
-# metadata:
-#   name: nginx-ingress
-#   labels:
-#     app: tomato
-#   namespace: default
-# spec:
-#   ingressClassName: nginx
-#   rules:
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  labels:
+    app: tomato
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+    host: tomato.devsecops.tushar
+    http:
+      paths:
+        backend:
+          service:
+            name: tomato-clusterip-service
+            port: 80
+        path: "/"
+        pathType: Prefix
