@@ -10,7 +10,7 @@ spec:
   rules:
    -  host: tomato.devsecops.tushar
       http:
-        paths:
+      - paths:
           backend:
             service:
               name: tomato-clusterip-service
