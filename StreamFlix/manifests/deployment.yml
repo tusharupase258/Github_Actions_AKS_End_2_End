@@ -22,6 +22,6 @@ spec:
     spec:
       containers:
       - name: streamflixc
-        image: streamflix:latest
+        image: tusharacr.azurecr.io/streamflix:latest
         ports:
         -  containerPort: 80
