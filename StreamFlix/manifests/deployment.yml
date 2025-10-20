@@ -7,8 +7,6 @@ metadata:
   namespace: default
 spec:
   replicas: 2
-  selector:
-    app: streamflix
   strategy:
     type: RollingUpdate
     rollingupdate:
