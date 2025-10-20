@@ -7,9 +7,12 @@ metadata:
   namespace: default
 spec:
   replicas: 2
+  selector:
+    matchLabels:
+    app: streamflix
   strategy:
     type: RollingUpdate
-    rollingupdate:
+    rollingUpdate:
       maxSurge: 50%
       maxUnavailable: 50%
   template:
