@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamflix-deployment
+  labels:
+    app: streamflix
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    app: streamflix
+  strategy:
+    type: RollingUpdate
+    rollingupdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+  template:
+    metadata:
+      labels:
+        app: streamflix
+    spec:
+    containers:
+    - name:: streamflixc
+      image:
+      ports:
+      -  containerPort: 80
+
