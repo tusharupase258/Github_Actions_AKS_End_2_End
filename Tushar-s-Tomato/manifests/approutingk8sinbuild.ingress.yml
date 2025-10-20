@@ -1,20 +1,20 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: approuting-ingress
-  labels:
-    app: tomato
-  namespace: default
-spec:
-  ingressClassName: webapprouting.kubernetes.azure.com
-  rules:
-   - host: tomato1.devsecopstushar.tech
-     http:
-        paths:
-        - path: "/"
-          pathType: Prefix
-          backend:
-            service:
-              name: tomato-clusterip-service
-              port:
-                number: 80
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: approuting-ingress
+#   labels:
+#     app: tomato
+#   namespace: default
+# spec:
+#   ingressClassName: webapprouting.kubernetes.azure.com
+#   rules:
+#    - host: tomato1.devsecopstushar.tech
+#      http:
+#         paths:
+#         - path: "/"
+#           pathType: Prefix
+#           backend:
+#             service:
+#               name: tomato-clusterip-service
+#               port:
+#                 number: 80
