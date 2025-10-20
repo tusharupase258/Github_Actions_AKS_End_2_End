@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-rule-streamflix
+  namespace: default
+spec:
+  ingressClassName: azure-application-gateway
+  rules:
+    - host: streamflix2.devsecopstushar.tech
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: streamflix-clusterip-service
+                port:
+                  number: 80

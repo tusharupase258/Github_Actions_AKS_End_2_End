@@ -21,7 +21,6 @@ spec:
     spec:
     containers:
     - name:: streamflixc
-      image:
+      image: streamflix:latest
       ports:
       -  containerPort: 80
-
