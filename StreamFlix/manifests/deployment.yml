@@ -20,8 +20,8 @@ spec:
       labels:
         app: streamflix
     spec:
-    containers:
-    - name: streamflixc
-      image: streamflix:latest
-      ports:
-      -  containerPort: 80
+      containers:
+      - name: streamflixc
+        image: streamflix:latest
+        ports:
+        -  containerPort: 80
