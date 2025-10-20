@@ -9,7 +9,7 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-    app: streamflix
+      app: streamflix
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -21,7 +21,7 @@ spec:
         app: streamflix
     spec:
     containers:
-    - name:: streamflixc
+    - name: streamflixc
       image: streamflix:latest
       ports:
       -  containerPort: 80
