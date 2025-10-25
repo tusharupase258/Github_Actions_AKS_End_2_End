@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-argocd-tomato
+  labels:
+    app: prod-tomato
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/tusharupase258/Github_Actions_AKS_End_2_End.git
+    targetRevision: main
+    path: Tushar-s-Tomato/manifests/Prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+     automated:
+        prune: true

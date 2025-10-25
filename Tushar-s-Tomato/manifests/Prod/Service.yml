@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prod-tomato-clusterip-service
+  labels:
+    app: prod-tomato
+  namespace: default
+spec:
+  type: ClusterIP
+  selector:
+    app: prod-tomato
+  ports:
+  - port: 80
+    targetPort: 80

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-tomoto-deployment1
+  namespace: default
+  labels:
+   app: dev-tomato
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: dev-tomato
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+     maxSurge: 25%
+     maxUnavailable: 25%
+  template:
+    metadata:
+    #  name: tomoto_pod
+     labels:
+       app: dev-tomato
+    spec:
+     containers:
+     - name: dev-tomatoc2
+       image: tusharacr.azurecr.io/tomato-ui:v1
+       ports:
+       - containerPort: 80
+    #    resources:
+    #      requests:
+    #        cpu: 100m
+    #        memory: 20Mi
+    #      limits:
+    #         cpu: 1
+    #         memory: 200Mi
+    # #    volumeMounts:
+    #    - name: tomatostorageclasspv
+    #      mountPath: /usr/share/nginx/html
+    #  volumes:
+    #  - name: tomatostorageclasspv
+    #    persistentVolumeClaim:
+    #      claimName: tomatopvc
