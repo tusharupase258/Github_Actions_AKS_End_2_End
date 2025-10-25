@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-helm-tomato-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/tusharupase258/Github_Actions_AKS_End_2_End.git
+    targetRevision: main
+    path: Tushar-s-Tomato/helm_chart/tomatohelm/
+    helm:
+      valueFiles:
+        - values.prod.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

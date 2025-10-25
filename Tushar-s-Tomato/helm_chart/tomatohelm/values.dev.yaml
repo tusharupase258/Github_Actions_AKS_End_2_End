@@ -1,0 +1,19 @@
+name: tomato-dev
+labels:
+  app: tomato
+replicaCount: 2
+image:
+  repository: tusharacr.azurecr.io/tomato-ui
+  tag: latest
+  pullPolicy: IfNotPresent
+service:
+  name: tomato-clusterip-service-dev
+  type: LoadBalancer
+  port: 80
+  targetPort: 80
+ingress:
+  name: ingress-rule-tomato-dev
+  className: azure-application-gateway
+  host: tomato3.devsecopstushar.tech
+  path: /
+  pathType: Prefix
